@@ -1,0 +1,12 @@
+c:\users\ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Console.exe.config
+c:\users\ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Console.exe
+c:\users\ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Console.pdb
+c:\users\ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\obj\Debug\TraceAnalysis.Console.csprojResolveAssemblyReference.cache
+c:\users\ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\obj\Debug\TraceAnalysis.Console.exe
+c:\users\ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\obj\Debug\TraceAnalysis.Console.pdb
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\1000frames_trace.log
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\100frames_trace.log
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\pressB_trace.log
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Engine.dll
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Engine.pdb
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\config.xml

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+  <TraceFiles>
+    <TraceFile>1000frames_trace.log</TraceFile>
+    <TraceFile>pressB_trace.log</TraceFile>
+    <TraceFile>100frames_trace.log</TraceFile>
+  </TraceFiles>
+  <NotesFiles>
+    <NotesFile>Toejam.xml</NotesFile>
+  </NotesFiles>
+</Configuration>

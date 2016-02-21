@@ -1,0 +1,4 @@
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Engine\bin\Debug\TraceAnalysis.Engine.dll
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Engine\bin\Debug\TraceAnalysis.Engine.pdb
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Engine\obj\Debug\TraceAnalysis.Engine.dll
+C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Engine\obj\Debug\TraceAnalysis.Engine.pdb
