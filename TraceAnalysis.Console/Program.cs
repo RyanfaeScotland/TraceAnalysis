@@ -18,33 +18,52 @@ namespace TraceAnalysis.Console
         private static Dictionary<string, TraceFile> traceFiles = new Dictionary<string, TraceFile>();
         private static Dictionary<string, NotesFile> notesFiles = new Dictionary<string, NotesFile>();
 
+        private static bool quit = false;
         private static void Main(string[] args)
         {
             ParseArgs(args);
 
             LoadConfig(configFile);
 
-            foreach (var fileNameAndSource in notesFiles)
-            {
-                notesFiles[fileNameAndSource.Key].GetRomFileName();
+            while (!quit) { 
+            System.Console.WriteLine("Whatcha gonna do...?");
+            System.Console.WriteLine("Q - Quit");
+            System.Console.WriteLine("Anything else - Everything else");
+            ConsoleKeyInfo key = System.Console.ReadKey();
+
+                switch (key.KeyChar.ToString().ToUpper())
+                {
+                    case "Q":
+                        quit = true;
+                        break;
+                    default:
+                        foreach (var fileNameAndSource in notesFiles)
+                        {
+                            notesFiles[fileNameAndSource.Key].GetRomFileName();
+                        }
+
+                        System.Console.WriteLine("Config complete - Hit a key to process...");
+                        System.Console.ReadKey();
+
+                        foreach (var fileNameAndSource in traceFiles)
+                        {
+                            AnalysisEngine.FindOccurances(fileNameAndSource.Key,
+                                traceFiles[fileNameAndSource.Key].traceLog);
+                        }
+
+                        if (traceFiles.Count >= 2)
+                        {
+                            AnalysisEngine.FindDifferences(traceFiles.ElementAt(0).Value.traceLog,
+                                traceFiles.ElementAt(1).Value.traceLog);
+                            AnalysisEngine.FindDifferences(traceFiles.ElementAt(1).Value.traceLog,
+                                traceFiles.ElementAt(0).Value.traceLog);
+                        }
+
+                        System.Console.WriteLine("FIN");
+                        break;
+                }
             }
-
-            System.Console.WriteLine("Config complete - Hit a key to process...");
-            System.Console.ReadKey();
-
-            foreach (var fileNameAndSource in traceFiles)
-            {
-                AnalysisEngine.FindOccurances(fileNameAndSource.Key, traceFiles[fileNameAndSource.Key].traceLog);
-            }
-
-            if (traceFiles.Count >= 2)
-            {
-                AnalysisEngine.FindDifferences(traceFiles.ElementAt(0).Value.traceLog, traceFiles.ElementAt(1).Value.traceLog);
-                AnalysisEngine.FindDifferences(traceFiles.ElementAt(1).Value.traceLog, traceFiles.ElementAt(0).Value.traceLog);
-            }
-
-            System.Console.WriteLine("FIN - Hit a key to exit");
-            System.Console.ReadKey();
+            System.Environment.Exit(0);
         }
 
         private static void LoadConfig(string configFile)
