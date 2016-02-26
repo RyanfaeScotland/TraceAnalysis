@@ -20,3 +20,5 @@ C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Engi
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\obj\Debug\TraceAnalysis.Console.csprojResolveAssemblyReference.cache
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\obj\Debug\TraceAnalysis.Console.exe
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\obj\Debug\TraceAnalysis.Console.pdb
+C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Console.exe
+C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Console.pdb

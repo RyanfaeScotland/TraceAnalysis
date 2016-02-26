@@ -76,7 +76,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "C:\Users\Ryan\Games\Emulators\Mega Drive\Roms\Toejam\Toejam.xml" "$(SolutionDir)TraceAnalysis.Console\bin\Debug" /y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

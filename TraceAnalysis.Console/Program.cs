@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using TraceAnalysis.Engine;
-using System.Diagnostics;
+
+//xcopy "C:\Users\Ryan\Games\Emulators\Mega Drive\Roms\Toejam\Toejam.xml" "$(SolutionDir)TraceAnalysis.Console\bin\Debug" /y
 
 namespace TraceAnalysis.Console
 {
@@ -25,44 +22,101 @@ namespace TraceAnalysis.Console
 
             LoadConfig(configFile);
 
-            while (!quit) { 
-            System.Console.WriteLine("Whatcha gonna do...?");
-            System.Console.WriteLine("Q - Quit");
-            System.Console.WriteLine("Anything else - Everything else");
-            ConsoleKeyInfo key = System.Console.ReadKey();
+            EnterMainProgramLoop();
 
-                switch (key.KeyChar.ToString().ToUpper())
+            Exit();
+        }
+
+        private static void EnterMainProgramLoop()
+        {
+            while (!quit)
+            {
+                string menuSelection = DisplayMenuAndGetChoice();
+
+                switch (menuSelection)
                 {
                     case "Q":
                         quit = true;
                         break;
+                    case "1":
+                        DisplayTraceFilesList();
+                        break;
+                    case "2":
+                        DisplayNotesFilesList();
+                        break;
+                    case "3":
+                        DisplayROMsFilesList();
+                        break;
+                    case "4":
+                        FindOccurances();
+                        break;            
+                    case "5":
+                        FindDifferences();
+                        break;                        
                     default:
-                        foreach (var fileNameAndSource in notesFiles)
-                        {
-                            notesFiles[fileNameAndSource.Key].GetRomFileName();
-                        }
-
-                        System.Console.WriteLine("Config complete - Hit a key to process...");
-                        System.Console.ReadKey();
-
-                        foreach (var fileNameAndSource in traceFiles)
-                        {
-                            AnalysisEngine.FindOccurances(fileNameAndSource.Key,
-                                traceFiles[fileNameAndSource.Key].traceLog);
-                        }
-
-                        if (traceFiles.Count >= 2)
-                        {
-                            AnalysisEngine.FindDifferences(traceFiles.ElementAt(0).Value.traceLog,
-                                traceFiles.ElementAt(1).Value.traceLog);
-                            AnalysisEngine.FindDifferences(traceFiles.ElementAt(1).Value.traceLog,
-                                traceFiles.ElementAt(0).Value.traceLog);
-                        }
-
-                        System.Console.WriteLine("FIN");
+                        System.Console.WriteLine("Invalid selection");
                         break;
                 }
             }
+        }
+
+        private static string DisplayMenuAndGetChoice()
+        {
+            System.Console.WriteLine("Whatcha gonna do...?");            
+            System.Console.WriteLine("1 - Display Trace File List");
+            System.Console.WriteLine("2 - Display Notes File List");
+            System.Console.WriteLine("3 - Display ROMs File List");
+            System.Console.WriteLine("4 - Find Occurances in Trace Files");
+            System.Console.WriteLine("5 - Find Differences in Trace Files");
+            System.Console.WriteLine("Q - Quit");
+            ConsoleKeyInfo key = System.Console.ReadKey();
+            System.Console.WriteLine();
+            return key.KeyChar.ToString().ToUpper();
+        }
+
+        private static void FindDifferences()
+        {
+            if (traceFiles.Count >= 2)
+            {
+                AnalysisEngine.FindDifferences(traceFiles.ElementAt(0).Value.traceLog, traceFiles.ElementAt(1).Value.traceLog);
+                AnalysisEngine.FindDifferences(traceFiles.ElementAt(1).Value.traceLog, traceFiles.ElementAt(0).Value.traceLog);
+            }
+        }
+
+        private static void FindOccurances()
+        {
+            foreach (var fileNameAndSource in traceFiles)
+            {
+                AnalysisEngine.FindOccurances(fileNameAndSource.Key, traceFiles[fileNameAndSource.Key].traceLog);
+            }
+        }
+
+        private static void DisplayTraceFilesList()
+        {
+            foreach (var fileNameAndSource in traceFiles)
+            {
+                System.Console.WriteLine("Trace File: " + traceFiles[fileNameAndSource.Key].name);
+            }
+        }
+
+        private static void DisplayNotesFilesList()
+        {
+            foreach (var fileNameAndSource in notesFiles)
+            {
+                System.Console.WriteLine("Notes File: " + notesFiles[fileNameAndSource.Key].name);
+            }
+        }
+
+        private static void DisplayROMsFilesList()
+        {
+            foreach (var fileNameAndSource in notesFiles)
+            {
+                System.Console.WriteLine("ROM File: " + notesFiles[fileNameAndSource.Key].GetRomFileName());
+            }
+        }
+
+        private static void Exit()
+        {
             System.Environment.Exit(0);
         }
 
