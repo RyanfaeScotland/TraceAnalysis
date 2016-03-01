@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 using TraceAnalysis.Engine;
@@ -14,7 +15,7 @@ namespace TraceAnalysis.Console
         
         private static Dictionary<string, TraceFile> traceFiles = new Dictionary<string, TraceFile>();
         private static Dictionary<string, NotesFile> notesFiles = new Dictionary<string, NotesFile>();
-
+        private static Dictionary<string, string> launchablePrograms = new Dictionary<string, string>();
         private static bool quit = false;
         private static void Main(string[] args)
         {
@@ -52,11 +53,42 @@ namespace TraceAnalysis.Console
                         break;            
                     case "5":
                         FindDifferences();
-                        break;                        
+                        break;         
+                    case "L":
+                        string programName = GetProgramName();
+                        if (!programName.Equals("Unknown"))
+                        {
+                            LaunchProgram(launchablePrograms[programName]);
+                        }
+                        break;
                     default:
                         System.Console.WriteLine("Invalid selection");
                         break;
                 }
+            }
+        }
+
+        private static string GetProgramName()
+        {
+            System.Console.WriteLine("What program...?");
+            System.Console.WriteLine("1 - Notepad++");
+            System.Console.WriteLine("2 - 68K");
+            System.Console.WriteLine("3 - Gens");
+            System.Console.WriteLine("4 - HxD");
+            ConsoleKeyInfo key = System.Console.ReadKey();
+            System.Console.WriteLine();
+            switch (key.KeyChar.ToString().ToUpper())
+            {
+                case "1":
+                    return "Notepad++";
+                case "2":
+                    return "68K";
+                case "3":
+                    return "Gens";
+                case "4":
+                    return "HxD";
+                default:
+                    return "Unknown";
             }
         }
 
@@ -68,6 +100,7 @@ namespace TraceAnalysis.Console
             System.Console.WriteLine("3 - Display ROMs File List");
             System.Console.WriteLine("4 - Find Occurances in Trace Files");
             System.Console.WriteLine("5 - Find Differences in Trace Files");
+            System.Console.WriteLine("L (program) - Launch Program");
             System.Console.WriteLine("Q - Quit");
             ConsoleKeyInfo key = System.Console.ReadKey();
             System.Console.WriteLine();
@@ -115,6 +148,31 @@ namespace TraceAnalysis.Console
             }
         }
 
+        private static void LaunchProgram(string programPath)
+        {
+            // Prepare the process to run
+            ProcessStartInfo start = new ProcessStartInfo();
+            // Enter in the command line arguments, everything you would enter after the executable name itself
+            //start.Arguments = arguments;
+
+            // Enter the executable to run, including the complete path
+            start.FileName = programPath;
+            // Do you want to show a console window?
+            //start.WindowStyle = ProcessWindowStyle.Hidden;
+            //start.CreateNoWindow = true;
+            //int exitCode;
+
+            // Run the external process & wait for it to finish
+            //using (Process proc = Process.Start(start))
+            //{
+            //    proc.WaitForExit();
+
+            //    // Retrieve the app's exit code
+            //    exitCode = proc.ExitCode;
+            //}
+            Process.Start(start);
+        }
+
         private static void Exit()
         {
             System.Environment.Exit(0);
@@ -123,6 +181,8 @@ namespace TraceAnalysis.Console
         private static void LoadConfig(string configFile)
         {
             var xml = XDocument.Load(configFile);
+
+            //Load trace files
             var fileNames = from c in xml.Root.Descendants("TraceFiles").Elements()
                             select c.Value;
             foreach (var fileName in fileNames)
@@ -131,12 +191,23 @@ namespace TraceAnalysis.Console
                 traceFiles.Add(fileName, new TraceFile(fileName));
             }
 
+            //Load notes files
             fileNames = from c in xml.Root.Descendants("NotesFiles").Elements()
                             select c.Value;
             foreach (var fileName in fileNames)
             {
                 System.Console.WriteLine("Primed Notes File: " + fileName);
                 notesFiles.Add(fileName, new NotesFile(fileName));
+            }
+
+            //Load runnable programs
+            var elements = from c in xml.Root.Descendants("Programs").Elements()
+                        select c;
+            foreach (var program in elements)
+            {
+                string programId = program.Attribute("id").Value;
+                System.Console.WriteLine("Primed Program: " + programId);
+                launchablePrograms.Add(programId, program.Value);
             }
         }
 
