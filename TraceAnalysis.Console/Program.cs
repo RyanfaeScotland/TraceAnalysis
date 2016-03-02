@@ -53,7 +53,10 @@ namespace TraceAnalysis.Console
                         break;            
                     case "5":
                         FindDifferences();
-                        break;         
+                        break;      
+                    case "H":
+                        notesFiles.FirstOrDefault().Value.GenerateHTML();
+                        break;
                     case "L":
                         string programName = GetProgramName();
                         if (!programName.Equals("Unknown"))
@@ -100,6 +103,7 @@ namespace TraceAnalysis.Console
             System.Console.WriteLine("3 - Display ROMs File List");
             System.Console.WriteLine("4 - Find Occurances in Trace Files");
             System.Console.WriteLine("5 - Find Differences in Trace Files");
+            System.Console.WriteLine("H - Generate HTML from notes");
             System.Console.WriteLine("L (program) - Launch Program");
             System.Console.WriteLine("Q - Quit");
             ConsoleKeyInfo key = System.Console.ReadKey();
