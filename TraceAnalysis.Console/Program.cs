@@ -64,6 +64,9 @@ namespace TraceAnalysis.Console
                             LaunchProgram(launchablePrograms[programName]);
                         }
                         break;
+                    case "R":
+                        AnalysisEngine.ReadConstantly(@"C:\Users\Ryan\Games\Emulators\Mega Drive\Gens r57shell Mod\trace.log");
+                        break;
                     default:
                         System.Console.WriteLine("Invalid selection");
                         break;
@@ -105,6 +108,7 @@ namespace TraceAnalysis.Console
             System.Console.WriteLine("5 - Find Differences in Trace Files");
             System.Console.WriteLine("H - Generate HTML from notes");
             System.Console.WriteLine("L (program) - Launch Program");
+            System.Console.WriteLine("R - Read Trace File Continuously");
             System.Console.WriteLine("Q - Quit");
             ConsoleKeyInfo key = System.Console.ReadKey();
             System.Console.WriteLine();
