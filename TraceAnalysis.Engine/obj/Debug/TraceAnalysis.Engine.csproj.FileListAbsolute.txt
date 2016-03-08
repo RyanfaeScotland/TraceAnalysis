@@ -4,7 +4,6 @@ C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.
 C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Engine\obj\Debug\TraceAnalysis.Engine.pdb
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Engine\bin\Debug\TraceAnalysis.Engine.dll
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Engine\bin\Debug\TraceAnalysis.Engine.pdb
-C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Engine\obj\Debug\TraceAnalysis.Engine.csprojResolveAssemblyReference.cache
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Engine\obj\Debug\TraceAnalysis.Engine.dll
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Engine\obj\Debug\TraceAnalysis.Engine.pdb
 C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Engine\obj\Debug\TraceAnalysis.Engine.csprojResolveAssemblyReference.cache
