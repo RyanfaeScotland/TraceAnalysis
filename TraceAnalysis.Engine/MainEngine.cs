@@ -9,38 +9,17 @@ namespace TraceAnalysis.Engine
 {
     public static class AnalysisEngine
     {
-        static volatile bool exit = false;
+        static volatile bool stopReadingConstantly;
 
-        public static void FindDifferences(Dictionary<string, int> addressesA, Dictionary<string, int> addressesB)
+        public static void FindDifferences(TraceFile traceFileA, TraceFile traceFileB)
         {
-            var keysDictionaryAHasThatBDoesNot = addressesA.Keys.Except(addressesB.Keys);
-            System.Console.WriteLine("In 1 but not in 2:");
-            foreach (var address in keysDictionaryAHasThatBDoesNot)
-            {
-                System.Console.WriteLine(address + ": " + addressesA[address]);
-            }
-            System.Console.WriteLine("Hit a key to continue...");
-            System.Console.ReadKey();
+            traceFileA.FindDifferences(traceFileB);
         }
 
-        public static void FindOccurances(string fileName, Dictionary<string, int> addresses)
+        public static void FindAddressFrequency(TraceFile traceFile)
         {
-            string address;
-            int value;
-            foreach (var line in File.ReadLines(fileName))
-            {
-                if (line.Length < 8) continue;
-                address = line.Substring(0, 8);
-                addresses[address] = addresses.TryGetValue(address, out value) ? ++value : 1;
-            }
-
-            System.Console.WriteLine(fileName);
-            foreach (var addressValuePair in addresses.OrderBy(key => key.Value))
-            {
-                System.Console.WriteLine(addressValuePair.Key + ": " + addressValuePair.Value);
-            }
-            System.Console.WriteLine("Hit a key to continue...");
-            System.Console.ReadKey();
+            traceFile.FindAddressFrequency();
+            traceFile.WriteAddressFrequencyToConsole();
         }
 
         public static void ReadConstantly(string fileName)
@@ -53,12 +32,12 @@ namespace TraceAnalysis.Engine
             {
                 Task.Factory.StartNew(() =>
                 {
-                    exit = false;
+                    stopReadingConstantly = false;
                     while (Console.ReadKey().Key != ConsoleKey.Q) ;
-                    exit = true;
+                    stopReadingConstantly = true;
                 });
 
-                while (!exit)
+                while (!stopReadingConstantly)
                 {
                     if (++counter >= 100)
                     {
