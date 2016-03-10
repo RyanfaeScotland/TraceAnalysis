@@ -57,6 +57,9 @@
     <None Include="pressB_trace.log">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="ToejamStartTrace.log">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TraceAnalysis.Engine\TraceAnalysis.Engine.csproj">

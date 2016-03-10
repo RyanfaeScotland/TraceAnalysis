@@ -4,6 +4,7 @@
     <TraceFile>1000frames_trace.log</TraceFile>
     <TraceFile>pressB_trace.log</TraceFile>
     <TraceFile>100frames_trace.log</TraceFile>
+    <TraceFile>ToejamStartTrace.log</TraceFile>
   </TraceFiles>
   <NotesFiles>
     <NotesFile>Toejam.xml</NotesFile>

@@ -30,7 +30,7 @@ namespace TraceAnalysis.Console
         {
             while (!quit)
             {
-                string menuSelection = DisplayMenuAndGetChoice();
+                string menuSelection = DisplayMainMenuAndGetChoice();
 
                 switch (menuSelection)
                 {
@@ -47,7 +47,7 @@ namespace TraceAnalysis.Console
                         DisplayROMsFilesList();
                         break;
                     case "4":
-                        FindAddressFrequency();
+                        FindAddressFrequency(null);
                         break;            
                     case "5":
                         FindDifferences();
@@ -56,7 +56,7 @@ namespace TraceAnalysis.Console
                         notesFiles.FirstOrDefault().Value.GenerateHTML();
                         break;
                     case "L":
-                        string programName = GetProgramName();
+                        string programName = DisplayProgramMenuAndGetChoice();
                         if (!programName.Equals("Unknown"))
                         {
                             LaunchProgram(launchablePrograms[programName]);
@@ -65,6 +65,9 @@ namespace TraceAnalysis.Console
                     case "R":
                         AnalysisEngine.ReadConstantly(@"C:\Users\Ryan\Games\Emulators\Mega Drive\Gens r57shell Mod\trace.log");
                         break;
+                    case "T":
+                        FindAddressFrequency("ToejamStartTrace.log");
+                        break;            
                     default:
                         System.Console.WriteLine("Invalid selection");
                         break;
@@ -72,7 +75,7 @@ namespace TraceAnalysis.Console
             }
         }
 
-        private static string GetProgramName()
+        private static string DisplayProgramMenuAndGetChoice()
         {
             System.Console.WriteLine("What program...?");
             System.Console.WriteLine("1 - Notepad++");
@@ -96,7 +99,7 @@ namespace TraceAnalysis.Console
             }
         }
 
-        private static string DisplayMenuAndGetChoice()
+        private static string DisplayMainMenuAndGetChoice()
         {
             System.Console.WriteLine("Whatcha gonna do...?");            
             System.Console.WriteLine("1 - Display Trace File List");
@@ -107,6 +110,7 @@ namespace TraceAnalysis.Console
             System.Console.WriteLine("H - Generate HTML from notes");
             System.Console.WriteLine("L - Launch Program");
             System.Console.WriteLine("R - Read Trace File Continuously");
+            System.Console.WriteLine("T - Find Address Frequency in ToejamStartTrace.log");
             System.Console.WriteLine("Q - Quit");
             ConsoleKeyInfo key = System.Console.ReadKey();
             System.Console.WriteLine();
@@ -124,11 +128,15 @@ namespace TraceAnalysis.Console
             }
         }
 
-        private static void FindAddressFrequency()
+        private static void FindAddressFrequency(string traceFileName)
         {
-            foreach (var fileNameAndSource in traceFiles)
-            {
-                AnalysisEngine.FindAddressFrequency(traceFiles[fileNameAndSource.Key]);
+            if (String.IsNullOrEmpty(traceFileName)){
+                foreach (var fileNameAndSource in traceFiles)
+                {
+                    AnalysisEngine.FindAddressFrequency(traceFiles[fileNameAndSource.Key]);
+                }
+            }else{
+                AnalysisEngine.FindAddressFrequency(traceFiles[traceFileName]);
             }
         }
 
