@@ -36,6 +36,7 @@ namespace TraceAnalysis.Engine
                 while (!stopLoadingTraceFile)
                 {
                     string line = sr.ReadLine();
+                    if (line == null) break;
                     if (line.Length < 14) continue;
                     string address = line.Substring(0, 8);
                     addressesToLines[address] = new TraceLine(line);
@@ -74,23 +75,36 @@ namespace TraceAnalysis.Engine
                 System.Console.WriteLine(address);
             }
         }
+
+        public List<TraceLine> FindInstruction(string instruction)
+        {
+            List<TraceLine> instructionLines = new List<TraceLine>();
+            foreach (TraceLine line in addressesToLines.Values)
+            {
+                if (line.instruction.StartsWith(instruction))
+                {
+                    instructionLines.Add(line);
+                }
+            }
+            return instructionLines;
+        }
     }
 
     public class TraceLine
     {
-        string address;
-        string opcode;
-        string instruction;
-        string A0, A1, A2, A3, A4, A5, A6, A7;
-        string D0, D1, D2, D3, D4, D5, D6, D7;
-        string flags;
+        public string address;
+        public string opcode;
+        public string instruction;
+        public string A0, A1, A2, A3, A4, A5, A6, A7;
+        public string D0, D1, D2, D3, D4, D5, D6, D7;
+        public string flags;
 
         public TraceLine(string rawLine)
         {
             //00:0202  4A B9  TST.L   ($00A10008)              A0=00000000 A1=00000000 A2=00000000 A3=00000000 A4=00000000 A5=00000000 A6=00000000 A7=00FF8000 D0=00000000 D1=00000000 D2=00000000 D3=00000000 D4=00000000 D5=00000000 D6=00000000 D7=00000000 xnzvc
             address = rawLine.Substring(0, 7);
             opcode = rawLine.Substring(9, 5);
-            instruction = rawLine.Substring(16, 25).Trim();
+            instruction = rawLine.Substring(16, 33).Trim();
             A0 = rawLine.Substring(rawLine.IndexOf("A0") + 3, 8);
             A1 = rawLine.Substring(rawLine.IndexOf("A1") + 3, 8);
             A2 = rawLine.Substring(rawLine.IndexOf("A2") + 3, 8);

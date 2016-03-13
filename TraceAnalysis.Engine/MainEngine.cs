@@ -70,5 +70,14 @@ namespace TraceAnalysis.Engine
             }
             return line;
         }
+
+        public static void FindInstruction(TraceFile traceFile, string instruction)
+        {
+            List<TraceLine> instructions = traceFile.FindInstruction(instruction);
+            foreach (TraceLine line in instructions)
+            {
+                System.Console.WriteLine(String.Format("{0}: {1}", line.address, line.instruction));
+            }
+        }
     }
 }

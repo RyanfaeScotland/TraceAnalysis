@@ -67,7 +67,10 @@ namespace TraceAnalysis.Console
                         break;
                     case "T":
                         FindAddressFrequency("ToejamStartTrace.log");
-                        break;            
+                        break;  
+                    case "U":
+                        FindInstruction("ToejamStartTrace.log", "DBFa");
+                        break;
                     default:
                         System.Console.WriteLine("Invalid selection");
                         break;
@@ -111,6 +114,7 @@ namespace TraceAnalysis.Console
             System.Console.WriteLine("L - Launch Program");
             System.Console.WriteLine("R - Read Trace File Continuously");
             System.Console.WriteLine("T - Find Address Frequency in ToejamStartTrace.log");
+            System.Console.WriteLine("U - Find DBFa Instruction in ToejamStartTrace.log");
             System.Console.WriteLine("Q - Quit");
             ConsoleKeyInfo key = System.Console.ReadKey();
             System.Console.WriteLine();
@@ -138,6 +142,12 @@ namespace TraceAnalysis.Console
             }else{
                 AnalysisEngine.FindAddressFrequency(traceFiles[traceFileName]);
             }
+        }
+
+        private static void FindInstruction(string traceFileName, string instruction)
+        {
+            traceFiles[traceFileName].LoadTraceFile();
+            AnalysisEngine.FindInstruction(traceFiles[traceFileName], instruction);
         }
 
         private static void DisplayTraceFilesList()
