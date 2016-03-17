@@ -60,6 +60,9 @@ namespace TraceAnalysis.Console
                         notesFiles.FirstOrDefault().Value.GenerateHTML();
                         break;
                     case "L":
+                        AnalysisLoop("ToejamStartTrace.log");
+                        break;
+                    case "P":
                         string programName = DisplayProgramMenuAndGetChoice();
                         if (!programName.Equals("Unknown"))
                         {
@@ -80,6 +83,12 @@ namespace TraceAnalysis.Console
                         break;
                 }
             }
+        }
+
+        private static void AnalysisLoop(string traceFileName)
+        {
+            traceFiles[traceFileName].LoadTraceFile();
+            AnalysisEngine.AnalysisLoop(traceFiles[traceFileName]);
         }
 
         private static string DisplayProgramMenuAndGetChoice()
@@ -124,7 +133,8 @@ namespace TraceAnalysis.Console
             System.Console.WriteLine("F - Find Address Frequency in Trace Files");
             System.Console.WriteLine("5 - Find Differences in Trace Files");
             System.Console.WriteLine("H - Generate HTML from notes");
-            System.Console.WriteLine("L - Launch Program");
+            System.Console.WriteLine("L - Loop Analysis");
+            System.Console.WriteLine("P - Launch Program");
             System.Console.WriteLine("R - Read Trace File Continuously");
             System.Console.WriteLine("T - Find Address Frequency in ToejamStartTrace.log");
             System.Console.WriteLine("U - Find DBFa Instruction in ToejamStartTrace.log");

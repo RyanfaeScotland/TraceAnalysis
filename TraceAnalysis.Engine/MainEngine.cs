@@ -79,5 +79,19 @@ namespace TraceAnalysis.Engine
                 System.Console.WriteLine(String.Format("{0}: {1}", line.address, line.instruction));
             }
         }
+
+        public static void AnalysisLoop(TraceFile traceFile)
+        {
+            List<TraceLine> instructions = traceFile.FindInstruction("DBFa");
+            TraceLine line = instructions.First();
+            System.Console.WriteLine(String.Format("{0}: {1} - {2}", line.address, line.instruction, line.D1));
+            foreach (string address in traceFile.addressesToLines.Keys)
+            {
+                if (line.instruction.Contains(address.Substring(3).Trim()))
+                {
+                    System.Console.WriteLine(String.Format("{0}: {1} - {2}", traceFile.addressesToLines[address].address, traceFile.addressesToLines[address].instruction, traceFile.addressesToLines[address].A5));
+                }
+            }
+        }
     }
 }
