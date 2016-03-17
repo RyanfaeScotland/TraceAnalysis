@@ -23,3 +23,4 @@ C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\obj\Debug\TraceAnalysis.Cons
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Console.exe
 C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\bin\Debug\TraceAnalysis.Console.pdb
 C:\Users\Ryan\documents\visual studio 2013\Projects\TraceAnalysis\TraceAnalysis.Console\bin\Debug\ToejamStartTrace.log
+C:\SVN\Personal\TraceAnalysis\TraceAnalysis.Console\bin\Debug\ToejamStartTrace.log

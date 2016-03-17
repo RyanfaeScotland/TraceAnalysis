@@ -11,7 +11,7 @@ namespace TraceAnalysis.Console
     {
         private static string configFile = "config.xml";
         
-        private static Dictionary<string, TraceFile> traceFiles = new Dictionary<string, TraceFile>();
+        private static List<TraceFile> traceFiles = new List<TraceFile>();
         private static Dictionary<string, NotesFile> notesFiles = new Dictionary<string, NotesFile>();
         private static Dictionary<string, string> launchablePrograms = new Dictionary<string, string>();
         private static bool quit;
@@ -35,6 +35,7 @@ namespace TraceAnalysis.Console
                 switch (menuSelection)
                 {
                     case "Q":
+                    case "QUIT":
                         quit = true;
                         break;
                     case "1":
@@ -46,11 +47,14 @@ namespace TraceAnalysis.Console
                     case "3":
                         DisplayROMsFilesList();
                         break;
-                    case "4":
-                        FindAddressFrequency(null);
+                    case "F":
+                        menuSelection = DisplayTraceFileMenuAndGetChoice();
+                        FindAddressFrequency(menuSelection);
                         break;            
                     case "5":
-                        FindDifferences();
+                        menuSelection = DisplayTraceFileMenuAndGetChoice();
+                        menuSelection = menuSelection + "," + DisplayTraceFileMenuAndGetChoice();
+                        FindDifferences(menuSelection);
                         break;      
                     case "H":
                         notesFiles.FirstOrDefault().Value.GenerateHTML();
@@ -102,13 +106,22 @@ namespace TraceAnalysis.Console
             }
         }
 
+        private static string DisplayTraceFileMenuAndGetChoice()
+        {
+            System.Console.WriteLine("Which Trace file...?");
+            DisplayTraceFilesList();
+            string line = System.Console.ReadLine();
+            System.Console.WriteLine();
+            return line;
+        }
+
         private static string DisplayMainMenuAndGetChoice()
         {
             System.Console.WriteLine("Whatcha gonna do...?");            
             System.Console.WriteLine("1 - Display Trace File List");
             System.Console.WriteLine("2 - Display Notes File List");
             System.Console.WriteLine("3 - Display ROMs File List");
-            System.Console.WriteLine("4 - Find Address Frequency in Trace Files");
+            System.Console.WriteLine("F - Find Address Frequency in Trace Files");
             System.Console.WriteLine("5 - Find Differences in Trace Files");
             System.Console.WriteLine("H - Generate HTML from notes");
             System.Console.WriteLine("L - Launch Program");
@@ -116,45 +129,48 @@ namespace TraceAnalysis.Console
             System.Console.WriteLine("T - Find Address Frequency in ToejamStartTrace.log");
             System.Console.WriteLine("U - Find DBFa Instruction in ToejamStartTrace.log");
             System.Console.WriteLine("Q - Quit");
-            ConsoleKeyInfo key = System.Console.ReadKey();
+            string line = System.Console.ReadLine();
             System.Console.WriteLine();
-            return key.KeyChar.ToString().ToUpper();
+            return line.ToUpper();
         }
 
-        private static void FindDifferences()
+        private static void FindDifferences(string commaSepetatedFileChoices)
         {
-            if (traceFiles.Count >= 2)
+            string[] traceFileIndexes = commaSepetatedFileChoices.Split(',');
+            if (traceFileIndexes.Length >= 2)
             {
-                traceFiles.ElementAt(0).Value.LoadTraceFile();
-                traceFiles.ElementAt(1).Value.LoadTraceFile();
-                AnalysisEngine.FindDifferences(traceFiles.ElementAt(0).Value, traceFiles.ElementAt(1).Value);
-                AnalysisEngine.FindDifferences(traceFiles.ElementAt(1).Value, traceFiles.ElementAt(0).Value);
+                traceFiles.ElementAt(Int32.Parse(traceFileIndexes[0])).LoadTraceFile();
+                traceFiles.ElementAt(Int32.Parse(traceFileIndexes[1])).LoadTraceFile();
+                AnalysisEngine.FindDifferences(traceFiles.ElementAt(Int32.Parse(traceFileIndexes[0])), traceFiles.ElementAt(Int32.Parse(traceFileIndexes[1])));
+                AnalysisEngine.FindDifferences(traceFiles.ElementAt(Int32.Parse(traceFileIndexes[1])), traceFiles.ElementAt(Int32.Parse(traceFileIndexes[0])));
             }
         }
 
-        private static void FindAddressFrequency(string traceFileName)
+        private static void FindAddressFrequency(string traceFileIndex)
         {
-            if (String.IsNullOrEmpty(traceFileName)){
-                foreach (var fileNameAndSource in traceFiles)
+            if (String.IsNullOrEmpty(traceFileIndex))
+            {
+                foreach (var traceFile in traceFiles)
                 {
-                    AnalysisEngine.FindAddressFrequency(traceFiles[fileNameAndSource.Key]);
+                    AnalysisEngine.FindAddressFrequency(traceFile);
                 }
             }else{
-                AnalysisEngine.FindAddressFrequency(traceFiles[traceFileName]);
+                AnalysisEngine.FindAddressFrequency(traceFiles[Int32.Parse(traceFileIndex)]);
             }
         }
 
-        private static void FindInstruction(string traceFileName, string instruction)
+        private static void FindInstruction(string traceFileIndex, string instruction)
         {
-            traceFiles[traceFileName].LoadTraceFile();
-            AnalysisEngine.FindInstruction(traceFiles[traceFileName], instruction);
+            traceFiles[Int32.Parse(traceFileIndex)].LoadTraceFile();
+            AnalysisEngine.FindInstruction(traceFiles[Int32.Parse(traceFileIndex)], instruction);
         }
 
         private static void DisplayTraceFilesList()
         {
-            foreach (var fileNameAndSource in traceFiles)
+            int position = 0;
+            foreach (var traceFile in traceFiles)
             {
-                System.Console.WriteLine("Trace File: " + traceFiles[fileNameAndSource.Key].nameAndPath);
+                System.Console.WriteLine(String.Format("{0} - {1}", position++, traceFile.nameAndPath));
             }
         }
 
@@ -214,7 +230,7 @@ namespace TraceAnalysis.Console
             foreach (var fileName in fileNames)
             {
                 System.Console.WriteLine("Primed Trace File: " + fileName);
-                traceFiles.Add(fileName, new TraceFile(fileName));
+                traceFiles.Add(new TraceFile(fileName));
             }
 
             //Load notes files
