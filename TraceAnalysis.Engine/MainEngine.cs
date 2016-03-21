@@ -80,7 +80,7 @@ namespace TraceAnalysis.Engine
             }
         }
 
-        public static void AnalysisLoop(TraceFile traceFile)
+        public static void AnalyseLoop(TraceFile traceFile)
         {
             List<TraceLine> instructions = traceFile.FindInstruction("DBFa");
             TraceLine line = instructions.First();

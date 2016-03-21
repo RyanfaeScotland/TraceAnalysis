@@ -11,35 +11,51 @@ namespace TraceAnalysis.Engine
     {
         public string nameAndPath { get; set; }
         public Dictionary<string, TraceLine> addressesToLines { get; set; }
+        public List<TraceLine> linesInOrder { get; set; }
         public Dictionary<string, int> addressesFrequency { get; set; }
-        public bool stopLoadingTraceFile;
+        public bool stopLoadingTraceFile, fileLoaded;
+        
         public TraceFile(string nameAndPath)
         {
             this.nameAndPath = nameAndPath;
             addressesToLines = new Dictionary<string, TraceLine>();
+            linesInOrder = new List<TraceLine>();
             addressesFrequency = new Dictionary<string, int>();
+            fileLoaded = false;
         }
 
         public void LoadTraceFile()
         {
+            if (fileLoaded)
+            {
+                return;
+            }
             var fs = new FileStream(nameAndPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using (var sr = new StreamReader(fs))
             {
-                Task.Factory.StartNew(() =>
+                var task = Task.Factory.StartNew(() =>
                 {
                     stopLoadingTraceFile = false;
                     Console.WriteLine("Reading Trace File, press A to Abort");
-                    while (Console.ReadKey().Key != ConsoleKey.A) Thread.Sleep(1);
+                    while (Console.ReadKey().Key != ConsoleKey.A && !fileLoaded) Thread.Sleep(1);
                     stopLoadingTraceFile = true;
                 });
 
                 while (!stopLoadingTraceFile)
                 {
                     string line = sr.ReadLine();
-                    if (line == null) break;
-                    if (line.Length < 14) continue;
+                    if (line == null)
+                    {
+                        fileLoaded = true;
+                        break;
+                    }
+                    if (line.Length < 14) 
+                    {
+                        continue; 
+                    }
                     string address = line.Substring(0, 8);
                     addressesToLines[address] = new TraceLine(line);
+                    linesInOrder.Add(new TraceLine(line));
                     Thread.Sleep(1);
                 }
             }
@@ -88,6 +104,15 @@ namespace TraceAnalysis.Engine
             }
             return instructionLines;
         }
+
+        public void WriteOutLineInOrder()
+        {
+            for (int index = 0; index < linesInOrder.Count; index++)
+            {
+                System.Console.WriteLine("{0}: {1}", linesInOrder[index].address, linesInOrder[index].instruction);
+            }
+        }
+    
     }
 
     public class TraceLine
@@ -105,22 +130,22 @@ namespace TraceAnalysis.Engine
             address = rawLine.Substring(0, 7);
             opcode = rawLine.Substring(9, 5);
             instruction = rawLine.Substring(16, 33).Trim();
-            A0 = rawLine.Substring(rawLine.IndexOf("A0") + 3, 8);
-            A1 = rawLine.Substring(rawLine.IndexOf("A1") + 3, 8);
-            A2 = rawLine.Substring(rawLine.IndexOf("A2") + 3, 8);
-            A3 = rawLine.Substring(rawLine.IndexOf("A3") + 3, 8);
-            A4 = rawLine.Substring(rawLine.IndexOf("A4") + 3, 8);
-            A5 = rawLine.Substring(rawLine.IndexOf("A5") + 3, 8);
-            A6 = rawLine.Substring(rawLine.IndexOf("A6") + 3, 8);
-            A7 = rawLine.Substring(rawLine.IndexOf("A7") + 3, 8);
-            D0 = rawLine.Substring(rawLine.IndexOf("D0") + 3, 8);
-            D1 = rawLine.Substring(rawLine.IndexOf("D1") + 3, 8);
-            D2 = rawLine.Substring(rawLine.IndexOf("D2") + 3, 8);
-            D3 = rawLine.Substring(rawLine.IndexOf("D3") + 3, 8);
-            D4 = rawLine.Substring(rawLine.IndexOf("D4") + 3, 8);
-            D5 = rawLine.Substring(rawLine.IndexOf("D5") + 3, 8);
-            D6 = rawLine.Substring(rawLine.IndexOf("D6") + 3, 8);
-            D7 = rawLine.Substring(rawLine.IndexOf("D7") + 3, 8);
+            A0 = rawLine.Substring(rawLine.LastIndexOf("A0") + 3, 8);
+            A1 = rawLine.Substring(rawLine.LastIndexOf("A1") + 3, 8);
+            A2 = rawLine.Substring(rawLine.LastIndexOf("A2") + 3, 8);
+            A3 = rawLine.Substring(rawLine.LastIndexOf("A3") + 3, 8);
+            A4 = rawLine.Substring(rawLine.LastIndexOf("A4") + 3, 8);
+            A5 = rawLine.Substring(rawLine.LastIndexOf("A5") + 3, 8);
+            A6 = rawLine.Substring(rawLine.LastIndexOf("A6") + 3, 8);
+            A7 = rawLine.Substring(rawLine.LastIndexOf("A7") + 3, 8);
+            D0 = rawLine.Substring(rawLine.LastIndexOf("D0") + 3, 8);
+            D1 = rawLine.Substring(rawLine.LastIndexOf("D1") + 3, 8);
+            D2 = rawLine.Substring(rawLine.LastIndexOf("D2") + 3, 8);
+            D3 = rawLine.Substring(rawLine.LastIndexOf("D3") + 3, 8);
+            D4 = rawLine.Substring(rawLine.LastIndexOf("D4") + 3, 8);
+            D5 = rawLine.Substring(rawLine.LastIndexOf("D5") + 3, 8);
+            D6 = rawLine.Substring(rawLine.LastIndexOf("D6") + 3, 8);
+            D7 = rawLine.Substring(rawLine.LastIndexOf("D7") + 3, 8);
             flags = rawLine.Substring(rawLine.Length - 5, 5);
         }
     }

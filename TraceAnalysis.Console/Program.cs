@@ -31,7 +31,7 @@ namespace TraceAnalysis.Console
             while (!quit)
             {
                 string menuSelection = DisplayMainMenuAndGetChoice();
-
+                TraceFile selectedFile;
                 switch (menuSelection)
                 {
                     case "Q":
@@ -47,20 +47,30 @@ namespace TraceAnalysis.Console
                     case "3":
                         DisplayROMsFilesList();
                         break;
-                    case "F":
-                        menuSelection = DisplayTraceFileMenuAndGetChoice();
-                        FindAddressFrequency(menuSelection);
-                        break;            
-                    case "5":
-                        menuSelection = DisplayTraceFileMenuAndGetChoice();
-                        menuSelection = menuSelection + "," + DisplayTraceFileMenuAndGetChoice();
-                        FindDifferences(menuSelection);
+                    case "D":
+                        FindDifferences(DisplayTraceFileMenuAndGetChoice(), DisplayTraceFileMenuAndGetChoice());
                         break;      
+                    case "F":
+                        selectedFile = DisplayTraceFileMenuAndGetChoice();
+                        FindAddressFrequency(selectedFile);
+                        break;                                
                     case "H":
                         notesFiles.FirstOrDefault().Value.GenerateHTML();
                         break;
+                    case "I":
+                        FindInstruction(DisplayTraceFileMenuAndGetChoice(), DisplayPromptAndGetUserInput());
+                        break;                    
                     case "L":
-                        AnalysisLoop("ToejamStartTrace.log");
+                        AnalyseLoop(DisplayTraceFileMenuAndGetChoice());
+                        break;
+                    case "LOAD":
+                        selectedFile = DisplayTraceFileMenuAndGetChoice();
+                        selectedFile.LoadTraceFile();
+                        break;
+                    case "O":
+                        selectedFile = DisplayTraceFileMenuAndGetChoice();
+                        selectedFile.LoadTraceFile();
+                        selectedFile.WriteOutLineInOrder();
                         break;
                     case "P":
                         string programName = DisplayProgramMenuAndGetChoice();
@@ -72,12 +82,6 @@ namespace TraceAnalysis.Console
                     case "R":
                         AnalysisEngine.ReadConstantly(@"C:\Users\Ryan\Games\Emulators\Mega Drive\Gens r57shell Mod\trace.log");
                         break;
-                    case "T":
-                        FindAddressFrequency("ToejamStartTrace.log");
-                        break;  
-                    case "U":
-                        FindInstruction("ToejamStartTrace.log", "DBFa");
-                        break;
                     default:
                         System.Console.WriteLine("Invalid selection");
                         break;
@@ -85,10 +89,16 @@ namespace TraceAnalysis.Console
             }
         }
 
-        private static void AnalysisLoop(string traceFileName)
+        private static string DisplayPromptAndGetUserInput()
         {
-            traceFiles[traceFileName].LoadTraceFile();
-            AnalysisEngine.AnalysisLoop(traceFiles[traceFileName]);
+            System.Console.WriteLine("Enter a sensible response...");
+            return System.Console.ReadLine();
+        }
+
+        private static void AnalyseLoop(TraceFile traceFile)
+        {
+            traceFile.LoadTraceFile();
+            AnalysisEngine.AnalyseLoop(traceFile);
         }
 
         private static string DisplayProgramMenuAndGetChoice()
@@ -115,64 +125,66 @@ namespace TraceAnalysis.Console
             }
         }
 
-        private static string DisplayTraceFileMenuAndGetChoice()
+        private static TraceFile DisplayTraceFileMenuAndGetChoice()
         {
             System.Console.WriteLine("Which Trace file...?");
             DisplayTraceFilesList();
             string line = System.Console.ReadLine();
             System.Console.WriteLine();
-            return line;
+            int selection = Int32.Parse(line);
+            return selection == -1 ? null : traceFiles[Int32.Parse(line)];
         }
 
         private static string DisplayMainMenuAndGetChoice()
         {
+            System.Console.WriteLine();
             System.Console.WriteLine("Whatcha gonna do...?");            
             System.Console.WriteLine("1 - Display Trace File List");
             System.Console.WriteLine("2 - Display Notes File List");
             System.Console.WriteLine("3 - Display ROMs File List");
-            System.Console.WriteLine("F - Find Address Frequency in Trace Files");
-            System.Console.WriteLine("5 - Find Differences in Trace Files");
+            System.Console.WriteLine("D - Find Differences in Trace Files");
+            System.Console.WriteLine("F - Find Address Frequency in Trace File(s)");            
             System.Console.WriteLine("H - Generate HTML from notes");
+            System.Console.WriteLine("I - Find Instruction in Trace File(s)");
             System.Console.WriteLine("L - Loop Analysis");
+            System.Console.WriteLine("LOAD - Load Trace File");
+            System.Console.WriteLine("O - Output Trace File in Order Read");
             System.Console.WriteLine("P - Launch Program");
-            System.Console.WriteLine("R - Read Trace File Continuously");
-            System.Console.WriteLine("T - Find Address Frequency in ToejamStartTrace.log");
-            System.Console.WriteLine("U - Find DBFa Instruction in ToejamStartTrace.log");
+            System.Console.WriteLine("R - Read Trace File Continuously");            
             System.Console.WriteLine("Q - Quit");
             string line = System.Console.ReadLine();
             System.Console.WriteLine();
             return line.ToUpper();
         }
 
-        private static void FindDifferences(string commaSepetatedFileChoices)
+        private static void FindDifferences(TraceFile traceFileA, TraceFile traceFileB)
         {
-            string[] traceFileIndexes = commaSepetatedFileChoices.Split(',');
-            if (traceFileIndexes.Length >= 2)
+            if (traceFileA != null && traceFileB != null)
             {
-                traceFiles.ElementAt(Int32.Parse(traceFileIndexes[0])).LoadTraceFile();
-                traceFiles.ElementAt(Int32.Parse(traceFileIndexes[1])).LoadTraceFile();
-                AnalysisEngine.FindDifferences(traceFiles.ElementAt(Int32.Parse(traceFileIndexes[0])), traceFiles.ElementAt(Int32.Parse(traceFileIndexes[1])));
-                AnalysisEngine.FindDifferences(traceFiles.ElementAt(Int32.Parse(traceFileIndexes[1])), traceFiles.ElementAt(Int32.Parse(traceFileIndexes[0])));
+                traceFileA.LoadTraceFile();
+                traceFileB.LoadTraceFile();
+                AnalysisEngine.FindDifferences(traceFileA, traceFileB);
+                AnalysisEngine.FindDifferences(traceFileB, traceFileA);
             }
         }
 
-        private static void FindAddressFrequency(string traceFileIndex)
+        private static void FindAddressFrequency(TraceFile traceFile)
         {
-            if (String.IsNullOrEmpty(traceFileIndex))
+            if (traceFile == null)
             {
-                foreach (var traceFile in traceFiles)
+                foreach (var currentTraceFile in traceFiles)
                 {
-                    AnalysisEngine.FindAddressFrequency(traceFile);
+                    AnalysisEngine.FindAddressFrequency(currentTraceFile);
                 }
             }else{
-                AnalysisEngine.FindAddressFrequency(traceFiles[Int32.Parse(traceFileIndex)]);
+                AnalysisEngine.FindAddressFrequency(traceFile);
             }
         }
 
-        private static void FindInstruction(string traceFileIndex, string instruction)
+        private static void FindInstruction(TraceFile traceFile, string instruction)
         {
-            traceFiles[Int32.Parse(traceFileIndex)].LoadTraceFile();
-            AnalysisEngine.FindInstruction(traceFiles[Int32.Parse(traceFileIndex)], instruction);
+            traceFile.LoadTraceFile();
+            AnalysisEngine.FindInstruction(traceFile, instruction);
         }
 
         private static void DisplayTraceFilesList()
