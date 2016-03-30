@@ -84,12 +84,19 @@ namespace TraceAnalysis.Engine
         {
             List<TraceLine> instructions = traceFile.FindInstruction("DBFa");
             TraceLine line = instructions.First();
-            System.Console.WriteLine(String.Format("{0}: {1} - {2}", line.address, line.instruction, line.D1));
-            foreach (string address in traceFile.addressesToLines.Keys)
+            System.Console.WriteLine(String.Format("{0}: {1} - D1: {2}", line.address, line.instruction, line.D1));
+            for (int lineIndex = 0; lineIndex < traceFile.linesInOrder.Count; lineIndex++ )
             {
+                string address = traceFile.linesInOrder[lineIndex].address;
                 if (line.instruction.Contains(address.Substring(3).Trim()))
                 {
-                    System.Console.WriteLine(String.Format("{0}: {1} - {2}", traceFile.addressesToLines[address].address, traceFile.addressesToLines[address].instruction, traceFile.addressesToLines[address].A5));
+                    System.Console.WriteLine(String.Format("{0}: {1} - A5: {2} A4: {3}", traceFile.addressesToLines[address].address, traceFile.addressesToLines[address].instruction, traceFile.addressesToLines[address].A5, traceFile.addressesToLines[address].A4));
+                    while (line.address != address)
+                    {
+                        address = traceFile.linesInOrder[++lineIndex].address;
+                        System.Console.WriteLine(String.Format("{0}: {1} - {2} A4: {3}", traceFile.addressesToLines[address].address, traceFile.addressesToLines[address].instruction, traceFile.addressesToLines[address].A5, traceFile.addressesToLines[address].A4));                        
+                    }
+                    break;
                 }
             }
         }

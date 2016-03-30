@@ -53,7 +53,7 @@ namespace TraceAnalysis.Engine
                     {
                         continue; 
                     }
-                    string address = line.Substring(0, 8);
+                    string address = line.Substring(0, 7);
                     addressesToLines[address] = new TraceLine(line);
                     linesInOrder.Add(new TraceLine(line));
                     Thread.Sleep(1);
